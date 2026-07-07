@@ -40,3 +40,4 @@ stages:
         appType: 'webAppLinux'
         appName: 'az400project-webapp'
         package: '$(System.DefaultWorkingDirectory)/helloworld'
+        runtimeStack: 'NODE|24-lts'
