@@ -17,11 +17,11 @@ stages:
       displayName: 'Install Node.js'
 
     - script: |
-        cd helloworld
         npm install
-      displayName: 'Install dependencies'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/helloworld'
+      displayName: 'Npm Install Dependencies'
 
     - script: |
-        cd helloworld
         npm test
+      workingDirectory: '$(System.DefaultWorkingDirectory)/helloworld'
       displayName: 'Run Tests (Intentional Failure)'
