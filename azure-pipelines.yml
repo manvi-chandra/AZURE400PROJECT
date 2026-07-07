@@ -25,3 +25,18 @@ stages:
         echo "Running tests... All tests passed successfully!"
       workingDirectory: '$(System.DefaultWorkingDirectory)/helloworld'
       displayName: 'Run Tests (Fixed Pass)'
+
+- stage: DeployStage
+  displayName: 'Deploy to Azure App Service'
+  dependsOn: BuildStage
+  jobs:
+  - job: DeployJob
+    displayName: 'Deploy Job'
+    steps:
+    - task: AzureWebApp@1
+      displayName: 'Deploy Node.js App to Azure App Service'
+      inputs:
+        azureSubscription: 'AZURE400PROJECT-AppService-Connection'
+        appType: 'webAppLinux'
+        appName: 'az400project-webapp'
+        package: '$(System.DefaultWorkingDirectory)/helloworld'
