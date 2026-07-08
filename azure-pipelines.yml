@@ -5,6 +5,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
+
+# -------------------------------
+# Build Stage
+# -------------------------------
 - stage: BuildStage
   displayName: 'Build and Test Application'
   jobs:
@@ -26,9 +30,39 @@ stages:
       workingDirectory: '$(System.DefaultWorkingDirectory)/helloworld'
       displayName: 'Run Tests (Fixed Pass)'
 
+
+# -------------------------------
+# Security Stage
+# -------------------------------
+- stage: SecurityStage
+  displayName: 'Security Scan'
+  dependsOn: BuildStage
+  jobs:
+  - job: SecurityJob
+    displayName: 'Run Dependency Security Scan'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
+
+    - script: |
+        npm install
+      workingDirectory: '$(System.DefaultWorkingDirectory)/helloworld'
+      displayName: 'Install Dependencies'
+
+    - script: |
+        npm audit --audit-level=high
+      workingDirectory: '$(System.DefaultWorkingDirectory)/helloworld'
+      displayName: 'Dependency Security Scan'
+
+
+# -------------------------------
+# Deploy Stage
+# -------------------------------
 - stage: DeployStage
   displayName: 'Deploy to Azure App Service'
-  dependsOn: BuildStage
+  dependsOn: SecurityStage
   jobs:
   - job: DeployJob
     displayName: 'Deploy Job'
